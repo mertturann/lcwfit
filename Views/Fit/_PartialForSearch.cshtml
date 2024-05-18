@@ -1,0 +1,22 @@
+@model List<FitModel>
+
+
+
+@foreach (var item in Model)
+{
+
+    <tr>
+    <td>@item.Id</td>
+    <td>
+        <div class="form-check">
+            @Html.CheckBox("checkbox",new {value = item.Id, @class = "form-check-input bg-primary",id="ckb"})
+
+            
+        </div>
+    </td>
+    <td class="text-capitalize px-0">@item.Title</td>
+    <td class="text-center">
+        <div class="col-md-8 mx-auto px-0"><img class="img img-fluid w-100 px-0" src="~/img/@item.Image" /></div>
+    </td>
+</tr>
+}

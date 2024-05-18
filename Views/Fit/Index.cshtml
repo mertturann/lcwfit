@@ -1,0 +1,200 @@
+@model List<FitModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+<section id="navbar">
+    <nav class="navbar bg-body-tertiary bg-light">
+        <div class="container-fluid">
+            <div class="col-5 col-md-3">
+                <a class="navbar-brand">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/LC_Waikiki_logo.svg"
+                        class="img img-fluid w-75" />
+                </a>
+            </div>
+            <div class="col-7 col-md-3">
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Fit Bilgisi Ara.." aria-label="Search"
+                        value="" name="search" id="search">
+
+                </form>
+            </div>
+        </div>
+    </nav>
+</section>
+<section id="table" class="justify-content-center">
+    <div class="col-12 p-1 p-md-1">
+        <table class="table mt-1 border-5">
+            <thead class="table-dark table-responsive text-center">
+                <th class="text-bg-primary">ID</th>
+                <th class="text-bg-primary">Seçim</th>
+                <th class="text-bg-primary">Fit Başlığı</th>
+                <th class="text-bg-primary">Image</th>
+            </thead>
+            <tbody class="text-black" id="result">
+                <form id="checkboxForm">
+
+                </form>
+            </tbody>
+        </table>
+        <button id="submit" type="button" class="btn btn-dark btn-lg mx-auto align-self-center">Yazdır</button>
+
+    </div>
+</section>
+
+<script>
+
+
+    function searchData(query) {
+        if (query == '') {
+            $.ajax({
+                type: "POST",
+                url: "/Fit/Index",
+                data: { search: query },
+                datatype: "html",
+                success: function (data) {
+                    $('#result').html(data);
+                }
+            });
+        }
+
+        else {
+            $.ajax({
+                type: "POST",
+                url: "/Fit/LiveSearch",
+                data: { search: query },
+                datatype: "html",
+                success: function (data) {
+                    $('#result').html(data);
+                }
+            });
+        }
+    }
+
+    function gettoken() {
+        var token = '@Html.AntiForgeryToken()';
+        token = $(token).val();
+        return token;
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var query = $('#search').val();
+        searchData(query);
+    });
+
+    // Arama kutusunda her bir tuşa basıldığında çalışacak kısım
+    document.getElementById('search').addEventListener('keyup', function () {
+        var query = $(this).val();
+        searchData(query);
+    });
+    var intervalID;
+
+    // Interval fonksiyonu
+    function kontrolEt() {
+        var secilenCheckboxSayisi = $('input[type="checkbox"]:checked').length;
+
+        if (secilenCheckboxSayisi > 5) {
+            clearInterval(intervalID);
+            alert("En fazla 5 checkbox seçilebilir!");
+        }
+
+        // Tüm checkboxları dolaş
+        $('input[type="checkbox"]').each(function () {
+            // Seçilen checkbox değilse ve en fazla 5 checkbox seçilmişse
+            if (!$(this).prop('checked') && secilenCheckboxSayisi >= 5) {
+                // Checkbox'ı devre dışı bırak
+                $(this).prop('disabled', true);
+            } else {
+                // Checkbox'ı aktif hale getir
+                $(this).prop('disabled', false);
+            }
+        });
+    }
+
+    // Interval'ı başlat
+    intervalID = setInterval(kontrolEt, 100);
+
+    // Checkbox değişikliklerini dinle
+    $('input[type="checkbox"]').change(function () {
+        // Checkbox değiştiğinde kontrolEt fonksiyonunu çağır
+        kontrolEt();
+    });
+
+
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            var selectedValues = [];
+            $("#ckb:checked").each(function () {
+                selectedValues.push($(this).val());
+            });
+            $.ajax({
+                type: "POST",
+                url: "/Fit/Print",
+                headers: { "RequestVerificationToken": gettoken() },
+                data: JSON.stringify(selectedValues.map(Number)),
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.success) {
+                        var images = response.data;
+                        mergeImages(images);
+                    }
+                    else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(gettoken());
+                    console.error(error);
+                }
+
+            });
+        });
+    });
+
+
+    function mergeImages(images) {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+
+        var width = 25 * 96 / 2.54; // A4 boyutu piksel cinsinden
+        var height = 3.2 * 96 / 2.54; // A4 boyutu piksel cinsinden
+        canvas.width = width;
+        canvas.height = height * images.length + (images.length - 1); // Beyaz çizgi için ekstra alan
+        var offsetY = 0;
+
+
+        images.forEach(function (imageUrl, index) {
+            var img = new Image();
+            img.src = "img/" + imageUrl;
+            img.onload = function () {
+                ctx.drawImage(img, 0, offsetY, width, height);
+                if (index < images.length - 1) {
+                    // Beyaz çizgiyi ekleyelim
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, offsetY + height, width, 1);
+                }
+                offsetY += height + 1; 
+                if (index === images.length - 1) {
+                var blob = dataURItoBlob(canvas.toDataURL('image/png'));
+                var url = URL.createObjectURL(blob);
+                var newWindow = window.open(url, '_blank');
+                newWindow.document.close();
+                newWindow.focus();
+            }
+        };
+    });
+        }
+
+    function dataURItoBlob(dataURI) {
+        var byteString = atob(dataURI.split(',')[1]);
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: 'image/png' });
+    }
+</script>
