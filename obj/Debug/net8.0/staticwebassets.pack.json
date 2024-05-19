@@ -233,6 +233,10 @@
       "PackagePath": "staticwebassets/js/bootstrap.min.js.map"
     },
     {
+      "Id": "/Users/mertturan/Desktop/projects/thursday9/wwwroot/js/custom.js",
+      "PackagePath": "staticwebassets/js/custom.js"
+    },
+    {
       "Id": "/Users/mertturan/Desktop/projects/thursday9/wwwroot/lib/bootstrap/LICENSE",
       "PackagePath": "staticwebassets/lib/bootstrap"
     },

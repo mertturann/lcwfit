@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ieoRkfn4y/nqW46EDX722kX5LRYMWDKm1qWWkTWAJ2E=",
+  "Hash": "Xts8Y9Z2L2Wua11khvzjeRy9qvevGTiOrGAJAQ8/AoY=",
   "Source": "thursday9",
   "BasePath": "_content/thursday9",
   "Mode": "Default",
@@ -1117,6 +1117,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/bootstrap.min.js.map"
+    },
+    {
+      "Identity": "/Users/mertturan/Desktop/projects/thursday9/wwwroot/js/custom.js",
+      "SourceId": "thursday9",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mertturan/Desktop/projects/thursday9/wwwroot/",
+      "BasePath": "_content/thursday9",
+      "RelativePath": "js/custom.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/custom.js"
     },
     {
       "Identity": "/Users/mertturan/Desktop/projects/thursday9/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",

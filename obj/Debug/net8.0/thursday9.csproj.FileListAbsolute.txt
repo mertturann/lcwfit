@@ -248,3 +248,4 @@
 /Users/mertturan/Desktop/projects/thursday9/obj/Debug/net8.0/thursday9.pdb
 /Users/mertturan/Desktop/projects/thursday9/obj/Debug/net8.0/thursday9.genruntimeconfig.cache
 /Users/mertturan/Desktop/projects/thursday9/obj/Debug/net8.0/ref/thursday9.dll
+/Users/mertturan/Desktop/projects/thursday9/obj/Debug/net8.0/thursday9.sourcelink.json
